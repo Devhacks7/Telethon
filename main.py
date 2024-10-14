@@ -39,17 +39,20 @@ async def fetch_data() -> dict:
         "signature": "667FC72C2C362975B4C56CACDE81540C",
         "timestamp": int(time.time()),
     }
-    
+
     headers = {
         'Content-Type': 'application/json;charset=UTF-8',
         'Accept': 'application/json, text/plain, */*',
-        'Authorization': 'Bearer YOUR_API_TOKEN_HERE'  # Replace with your actual API token
+        'Authorization': 'Bearer YOUR_API_TOKEN_HERE'  # Replace with your actual API token if needed
     }
 
     try:
         response = requests.post(API_URL, headers=headers, json=request_data)
-        response.raise_for_status()
+        response.raise_for_status()  # Raise an error for bad responses
         return response.json()
+    except requests.HTTPError as e:
+        logger.error(f"Error fetching data: {e}")
+        return {"error": "Forbidden: Please check your API credentials or access permissions."}
     except Exception as e:
         logger.error(f"Error fetching data: {e}")
         return {"error": str(e)}
